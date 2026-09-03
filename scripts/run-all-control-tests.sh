@@ -27,6 +27,11 @@ fi
 
 # Result variable
 result=0
+
+# Refuse installed production CRDs, create owned fixtures, and clean up on exit.
+source "$(dirname "${BASH_SOURCE[0]}")/agent-test-crds.sh"
+setup_agent_test_crds test-resources/agent-sandbox-test-crds.yaml || exit 1
+
 # Run all control tests
 for control in $(ls controls); do
     if [[ -d controls/$control ]]; then

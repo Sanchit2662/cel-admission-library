@@ -1,0 +1,30 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: kubescape-c-0309-agent-sandbox-token-automount
+  labels:
+    controlId: C-0309
+  annotations:
+    controlUrl: https://kubescape.io/docs/controls/c-0309/
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups: ["agents.x-k8s.io"]
+      apiVersions: ["v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxes"]
+    - apiGroups: ["extensions.agents.x-k8s.io"]
+      apiVersions: ["v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxtemplates"]
+  validations:
+  - expression: >-
+      object.kind == 'SandboxTemplate' ?
+        (!has(object.spec.podTemplate) || !has(object.spec.podTemplate.spec) ||
+         !has(object.spec.podTemplate.spec.automountServiceAccountToken) ||
+         object.spec.podTemplate.spec.automountServiceAccountToken == false) :
+        (has(object.spec.podTemplate) && has(object.spec.podTemplate.spec) &&
+         has(object.spec.podTemplate.spec.automountServiceAccountToken) &&
+         object.spec.podTemplate.spec.automountServiceAccountToken == false)
+    message: Sandbox must explicitly set automountServiceAccountToken to false; SandboxTemplate may omit it to retain its secure default, but must not set it to true.

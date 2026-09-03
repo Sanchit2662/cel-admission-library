@@ -1,0 +1,38 @@
+[
+  {
+    "name": "managed",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}},\"networkPolicyManagement\":\"Managed\"}"
+    ]
+  },
+  {
+    "name": "null",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}},\"networkPolicyManagement\":null}"
+    ]
+  },
+  {
+    "name": "omitted",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "unmanaged",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}},\"networkPolicyManagement\":\"Unmanaged\"}"
+    ]
+  }
+]

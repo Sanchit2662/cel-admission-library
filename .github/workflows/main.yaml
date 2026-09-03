@@ -31,5 +31,6 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install -r requirements.txt
+        python3 -m unittest discover -s scripts -p 'test_agent_test_crds.py'
         ./scripts/run-all-control-tests.sh
 

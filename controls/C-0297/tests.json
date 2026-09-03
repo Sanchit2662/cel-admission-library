@@ -1,0 +1,196 @@
+[
+  {
+    "name": "failed-disallowed-runtime",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-runtime-gvisor.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"runc\",\"containers\":[{\"name\":\"python-runtime\",\"image\":\"python:3.11-slim\"}]}}}"
+    ]
+  },
+  {
+    "name": "failed-empty-runtime",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-runtime-gvisor.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"\",\"containers\":[{\"name\":\"python-runtime\",\"image\":\"python:3.11-slim\"}]}}}"
+    ]
+  },
+  {
+    "name": "failed-missing-runtime",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-runtime-gvisor.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"containers\":[{\"name\":\"python-runtime\",\"image\":\"python:3.11-slim\"}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-config-empty",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-runtime-empty.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"runc\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-config-missing",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"runc\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-gvisor",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-runtime-gvisor.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-kata",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-runtime-gvisor.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"kata\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-kata-configured",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-runtime-kata.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"kata\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-none",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-runtime-gvisor.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-runc",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-runtime-gvisor.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"runc\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-config-empty",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-runtime-empty.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"runc\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-config-missing",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"runc\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-gvisor",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-runtime-gvisor.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-kata",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-runtime-gvisor.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"kata\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-kata-configured",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-runtime-kata.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"kata\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-none",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-runtime-gvisor.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-runc",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-runtime-gvisor.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"runc\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "success",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-runtime-gvisor.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"python-runtime\",\"image\":\"python:3.11-slim\"}]}}}"
+    ]
+  },
+  {
+    "name": "Sandbox-no-settings",
+    "template": "agent-sandbox-default-token.yaml",
+    "expected": "pass",
+    "param_template": "agent-config-no-settings.yaml",
+    "field_change_list": []
+  },
+  {
+    "name": "Sandbox-no-params",
+    "template": "agent-sandbox-default-token.yaml",
+    "expected": "pass",
+    "param_template": "agent-config-no-settings.yaml",
+    "field_change_list": [],
+    "binding_template": "policy-binding-without-params.yaml",
+    "omit_param_ref": true
+  },
+  {
+    "name": "SandboxTemplate-no-settings",
+    "template": "agent-sandbox-template.yaml",
+    "expected": "pass",
+    "param_template": "agent-config-no-settings.yaml",
+    "field_change_list": []
+  },
+  {
+    "name": "SandboxTemplate-no-params",
+    "template": "agent-sandbox-template.yaml",
+    "expected": "pass",
+    "param_template": "agent-config-no-settings.yaml",
+    "field_change_list": [],
+    "binding_template": "policy-binding-without-params.yaml",
+    "omit_param_ref": true
+  }
+]

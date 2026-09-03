@@ -49,6 +49,12 @@ kubectl -n policy-example run nginx --image=nginx --restart=Never
 ## Library items
 | Control ID | Name | Policy name | Configuration parameter |
 | --- | --- | --- | --- |
+| [C-0297](https://kubescape.io/docs/controls/c-0297/) | Agent Sandbox runtime isolation | kubescape-c-0297-agent-sandbox-runtime-isolation | hardenedSandboxRuntimeClasses |
+| [C-0309](https://kubescape.io/docs/controls/c-0309/) | Agent Sandbox service account token isolation | kubescape-c-0309-agent-sandbox-token-automount | not configurable |
+| [C-0311](https://kubescape.io/docs/controls/c-0311/) | Agent Sandbox container resource limits | kubescape-c-0311-agent-sandbox-container-limits | not configurable |
+| [C-0312](https://kubescape.io/docs/controls/c-0312/) | Agent runtime image digest pinning | kubescape-c-0312-agent-sandbox-image-digests | not configurable |
+| [C-0313](https://kubescape.io/docs/controls/c-0313/) | Agent runtime image registries | kubescape-c-0313-agent-sandbox-image-registries | imageRepositoryAllowList |
+| [C-0314](https://kubescape.io/docs/controls/c-0314/) | Agent Sandbox managed network policy | kubescape-c-0314-agent-sandbox-managed-networking | not configurable |
 | [C-0001](https://kubescape.io/docs/controls/c-0001/) | Forbidden Container Registries | [kubescape-c-0001-deny-forbidden-container-registries](/docs/policies-based-on-kubescape-controls/kubescape-c-0001-deny-forbidden-container-registries.md) | [untrustedRegistries](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#untrustedregistries) |
 | [C-0004](https://kubescape.io/docs/controls/c-0004/) | Resources memory limit and request | [kubescape-c-0004-deny-resources-with-memory-limit-or-request-not-set](/docs/policies-based-on-kubescape-controls/kubescape-c-0004-deny-resources-with-memory-limit-or-request-not-set.md) | [memoryRequestMin](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#memory_request_min), [memoryRequestMax](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#memory_request_max), [memoryLimitMin](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#memory_limit_min), [memoryLimitMax](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#memory_limit_max) |
 | [C-0009](https://kubescape.io/docs/controls/c-0009/) | Resource limits | [kubescape-c-0009-deny-resources-with-memory-or-cpu-limit-not-set](/docs/policies-based-on-kubescape-controls/kubescape-c-0009-deny-resources-with-memory-or-cpu-limit-not-set.md) | not configurable |

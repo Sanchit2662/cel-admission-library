@@ -3,6 +3,8 @@ kind: ControlConfiguration
 metadata:
   name: placeholder
 settings:
+  hardenedSandboxRuntimeClasses:
+  - gvisor
   cpuLimitMax: 5
   cpuLimitMin: 1
   cpuRequestMax: 5

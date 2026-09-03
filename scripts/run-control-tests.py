@@ -78,7 +78,9 @@ try:
             policy_bind_temp_file_name = temp_file.name
         # Create the policy binding file
         policy_name = policy['metadata']['name']
-        policy_bind_change_list = ['spec.policyName=' + policy_name, 'metadata.name=' + policy_name + '-binding', 'spec.paramRef.name=' + policy_name + '-params']
+        policy_bind_change_list = ['spec.policyName=' + policy_name, 'metadata.name=' + policy_name + '-binding']
+        if not test.get('omit_param_ref', False):
+            policy_bind_change_list.append('spec.paramRef.name=' + policy_name + '-params')
         subprocess.check_call([python_executable, os.path.join(SCRIPTS_DIR, 'change-yaml-field.py'), '-i', os.path.join(TEST_RESOURCES_DIR, binding_template), '-o', policy_bind_temp_file_name] + policy_bind_change_list)
         print('Generated policy binding: ' + policy_bind_temp_file_name)
 
