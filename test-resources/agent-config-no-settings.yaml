@@ -1,0 +1,4 @@
+apiVersion: kubescape.io/v1
+kind: ControlConfiguration
+metadata:
+  name: no-settings

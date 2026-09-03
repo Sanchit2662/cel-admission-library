@@ -13,38 +13,51 @@ spec:
     kind: ControlConfiguration
   matchConstraints:
     resourceRules:
-    - apiGroups: ["agents.x-k8s.io"]
-      apiVersions: ["v1alpha1", "v1beta1"]
-      operations: ["CREATE", "UPDATE"]
-      resources: ["sandboxes"]
-    - apiGroups: ["extensions.agents.x-k8s.io"]
-      apiVersions: ["v1alpha1", "v1beta1"]
-      operations: ["CREATE", "UPDATE"]
-      resources: ["sandboxtemplates"]
-    - apiGroups: ["ate.dev"]
-      apiVersions: ["v1alpha1"]
-      operations: ["CREATE", "UPDATE"]
-      resources: ["workerpools", "actortemplates"]
+    - apiGroups:
+      - agents.x-k8s.io
+      apiVersions:
+      - v1alpha1
+      - v1beta1
+      operations:
+      - CREATE
+      - UPDATE
+      resources:
+      - sandboxes
+    - apiGroups:
+      - extensions.agents.x-k8s.io
+      apiVersions:
+      - v1alpha1
+      - v1beta1
+      operations:
+      - CREATE
+      - UPDATE
+      resources:
+      - sandboxtemplates
+    - apiGroups:
+      - ate.dev
+      apiVersions:
+      - v1alpha1
+      operations:
+      - CREATE
+      - UPDATE
+      resources:
+      - workerpools
   validations:
   - expression: >-
-      !['Sandbox', 'SandboxTemplate'].exists(k, object.kind == k) ||
-      (has(object.spec.podTemplate) && has(object.spec.podTemplate.spec) &&
-      has(object.spec.podTemplate.spec.containers) &&
-      object.spec.podTemplate.spec.containers.all(c,
-        params.settings.imageRepositoryAllowList.exists(r, c.image.startsWith(r + '/'))) &&
+      params == null || !has(params.settings) || !has(params.settings.imageRepositoryAllowList) || size(params.settings.imageRepositoryAllowList)
+      == 0 || (!['Sandbox', 'SandboxTemplate'].exists(k, object.kind == k) || (has(object.spec.podTemplate)
+      && has(object.spec.podTemplate.spec) && has(object.spec.podTemplate.spec.containers) && object.spec.podTemplate.spec.containers.all(c,
+        params.settings.imageRepositoryAllowList.exists(r, (c.image.startsWith(r + '/') || (r == 'docker.io'
+      && (!c.image.contains('/') || (!c.image.matches('^[^/]*[.:][^/]*/') && !c.image.startsWith('localhost/')))))))
+      &&
       (!has(object.spec.podTemplate.spec.initContainers) ||
         object.spec.podTemplate.spec.initContainers.all(c,
-          params.settings.imageRepositoryAllowList.exists(r, c.image.startsWith(r + '/')))))
+          params.settings.imageRepositoryAllowList.exists(r, (c.image.startsWith(r + '/') || (r == 'docker.io'
+      && (!c.image.contains('/') || (!c.image.matches('^[^/]*[.:][^/]*/') && !c.image.startsWith('localhost/'))))))))))
     message: Every Agent Sandbox image must use a registry in imageRepositoryAllowList.
   - expression: >-
-      object.kind != 'WorkerPool' ||
-      (has(object.spec.ateomImage) && params.settings.imageRepositoryAllowList.exists(r,
-        object.spec.ateomImage.startsWith(r + '/')))
-    message: WorkerPool ateomImage must use a registry in imageRepositoryAllowList.
-  - expression: >-
-      object.kind != 'ActorTemplate' ||
-      (has(object.spec.pauseImage) && params.settings.imageRepositoryAllowList.exists(r,
-         object.spec.pauseImage.startsWith(r + '/')) &&
-       has(object.spec.containers) && object.spec.containers.all(c,
-         params.settings.imageRepositoryAllowList.exists(r, c.image.startsWith(r + '/'))))
-    message: ActorTemplate pause and container images must use registries in imageRepositoryAllowList.
+      params == null || !has(params.settings) || !has(params.settings.imageRepositoryAllowList) || size(params.settings.imageRepositoryAllowList)
+      == 0 || (object.kind != 'WorkerPool' || (has(object.spec.workerImage) && params.settings.imageRepositoryAllowList.exists(r,
+        (object.spec.workerImage.startsWith(r + '/') || (r == 'docker.io' && (!object.spec.workerImage.contains('/')
+      || (!object.spec.workerImage.matches('^[^/]*[.:][^/]*/') && !object.spec.workerImage.startsWith('localhost/'))))))))
+    message: WorkerPool workerImage must use a registry in imageRepositoryAllowList.

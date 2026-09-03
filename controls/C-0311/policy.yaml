@@ -24,9 +24,9 @@ spec:
       has(object.spec.podTemplate.spec.containers) &&
       object.spec.podTemplate.spec.containers.all(c,
         has(c.resources) && has(c.resources.limits) &&
-        has(c.resources.limits.cpu) && has(c.resources.limits.memory)) &&
+        'cpu' in c.resources.limits && 'memory' in c.resources.limits) &&
       (!has(object.spec.podTemplate.spec.initContainers) ||
         object.spec.podTemplate.spec.initContainers.all(c,
           has(c.resources) && has(c.resources.limits) &&
-          has(c.resources.limits.cpu) && has(c.resources.limits.memory)))
+          'cpu' in c.resources.limits && 'memory' in c.resources.limits))
     message: Every Agent Sandbox container and init container must set CPU and memory limits.

@@ -1,4 +1,110 @@
 [
-  {"name":"SandboxTemplate without a CPU limit is blocked","template":"agent-sandbox-template-no-cpu.yaml","expected":"fail","field_change_list":[]},
-  {"name":"SandboxTemplate with all limits is allowed","template":"agent-sandbox-template.yaml","expected":"pass","field_change_list":[]}
+  {
+    "name": "sandbox-containers-complete",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-no-cpu",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-no-memory",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-complete",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-no-cpu",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-no-memory",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-complete",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-no-cpu",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-no-memory",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-complete",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-no-cpu",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-no-memory",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\"}}}]}}}"
+    ]
+  }
 ]

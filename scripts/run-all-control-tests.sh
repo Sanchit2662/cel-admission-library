@@ -28,9 +28,9 @@ fi
 # Result variable
 result=0
 
-# Agent Sandbox policies target custom resources. Install a minimal test-only
-# CRD so server-side dry runs exercise the VAP instead of failing discovery.
-kubectl apply -f test-resources/agent-sandbox-test-crds.yaml
+# Refuse installed production CRDs, create owned fixtures, and clean up on exit.
+source "$(dirname "${BASH_SOURCE[0]}")/agent-test-crds.sh"
+setup_agent_test_crds test-resources/agent-sandbox-test-crds.yaml || exit 1
 
 # Run all control tests
 for control in $(ls controls); do
@@ -53,7 +53,5 @@ for control in $(ls controls); do
         echo "=================================================="
     fi
 done
-
-kubectl delete -f test-resources/agent-sandbox-test-crds.yaml --ignore-not-found
 
 exit $result

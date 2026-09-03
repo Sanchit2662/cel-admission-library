@@ -49,7 +49,7 @@ kubectl -n policy-example run nginx --image=nginx --restart=Never
 ## Library items
 | Control ID | Name | Policy name | Configuration parameter |
 | --- | --- | --- | --- |
-| [C-0310](https://kubescape.io/docs/controls/c-0310/) | Agent Sandbox runtime isolation | kubescape-c-0310-agent-sandbox-runtime-isolation | agentRuntimeClassAllowList |
+| [C-0297](https://kubescape.io/docs/controls/c-0297/) | Agent Sandbox runtime isolation | kubescape-c-0297-agent-sandbox-runtime-isolation | hardenedSandboxRuntimeClasses |
 | [C-0309](https://kubescape.io/docs/controls/c-0309/) | Agent Sandbox service account token isolation | kubescape-c-0309-agent-sandbox-token-automount | not configurable |
 | [C-0311](https://kubescape.io/docs/controls/c-0311/) | Agent Sandbox container resource limits | kubescape-c-0311-agent-sandbox-container-limits | not configurable |
 | [C-0312](https://kubescape.io/docs/controls/c-0312/) | Agent runtime image digest pinning | kubescape-c-0312-agent-sandbox-image-digests | not configurable |

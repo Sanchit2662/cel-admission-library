@@ -27,7 +27,7 @@ spec:
                   items:
                     type: string
                   type: array
-                agentRuntimeClassAllowList:
+                hardenedSandboxRuntimeClasses:
                   items:
                     type: string
                   type: array

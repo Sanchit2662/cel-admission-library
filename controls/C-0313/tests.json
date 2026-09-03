@@ -1,6 +1,590 @@
 [
-  {"name":"SandboxTemplate with a disallowed registry is blocked","template":"agent-sandbox-template.yaml","expected":"fail","field_change_list":["spec.podTemplate.spec.containers.[0].image=evil.example/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]},
-  {"name":"SandboxTemplate with an allowed registry is allowed","template":"agent-sandbox-template.yaml","expected":"pass","field_change_list":[]},
-  {"name":"WorkerPool with a disallowed registry is blocked","template":"agent-worker-pool.yaml","expected":"fail","field_change_list":["spec.ateomImage=evil.example/ateom@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]},
-  {"name":"WorkerPool with an allowed registry is allowed","template":"agent-worker-pool.yaml","expected":"pass","field_change_list":[]}
+  {
+    "name": "sandbox-containers-allowed",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-docker-digest",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"nginx@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-docker-path",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"library/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-docker-path-tag",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"org/nginx:1.0\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-docker-short",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-docker-tag",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"nginx:1.0\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-empty",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-empty.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"evil.example/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-evil",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io.evil/actor\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-host",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"evil.example/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-local",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"localhost/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-missing",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"evil.example/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-containers-port",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"registry:5000/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-allowed",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-docker-digest",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"nginx@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-docker-path",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"library/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-docker-path-tag",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"org/nginx:1.0\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-docker-short",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-docker-tag",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"nginx:1.0\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-empty",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-empty.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"evil.example/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-evil",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"gcr.io.evil/actor\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-host",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"evil.example/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-local",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"localhost/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-missing",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"evil.example/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandbox-initContainers-port",
+    "template": "agent-sandbox-default-token.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"registry:5000/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-allowed",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-docker-digest",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"nginx@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-docker-path",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"library/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-docker-path-tag",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"org/nginx:1.0\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-docker-short",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-docker-tag",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"nginx:1.0\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-empty",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-empty.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"evil.example/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-evil",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io.evil/actor\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-host",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"evil.example/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-local",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"localhost/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-missing",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"evil.example/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-containers-port",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"registry:5000/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-allowed",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-docker-digest",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"nginx@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-docker-path",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"library/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-docker-path-tag",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"org/nginx:1.0\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-docker-short",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-docker-tag",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"nginx:1.0\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-empty",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-empty.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"evil.example/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-evil",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"gcr.io.evil/actor\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-host",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"evil.example/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-local",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"localhost/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-missing",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"evil.example/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "sandboxtemplate-initContainers-port",
+    "template": "agent-sandbox-template.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"podTemplate\":{\"spec\":{\"runtimeClassName\":\"gvisor\",\"containers\":[{\"name\":\"actor\",\"image\":\"gcr.io/team/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}],\"initContainers\":[{\"name\":\"actor\",\"image\":\"registry:5000/nginx\",\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}]}}}"
+    ]
+  },
+  {
+    "name": "worker-allowed",
+    "template": "agent-worker-pool.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"replicas\":1,\"workerImage\":\"gcr.io/team/actor\",\"template\":{\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}}"
+    ]
+  },
+  {
+    "name": "worker-docker-digest",
+    "template": "agent-worker-pool.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"replicas\":1,\"workerImage\":\"nginx@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"template\":{\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}}"
+    ]
+  },
+  {
+    "name": "worker-docker-path",
+    "template": "agent-worker-pool.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"replicas\":1,\"workerImage\":\"library/nginx\",\"template\":{\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}}"
+    ]
+  },
+  {
+    "name": "worker-docker-path-tag",
+    "template": "agent-worker-pool.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"replicas\":1,\"workerImage\":\"org/nginx:1.0\",\"template\":{\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}}"
+    ]
+  },
+  {
+    "name": "worker-docker-short",
+    "template": "agent-worker-pool.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"replicas\":1,\"workerImage\":\"nginx\",\"template\":{\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}}"
+    ]
+  },
+  {
+    "name": "worker-docker-tag",
+    "template": "agent-worker-pool.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"replicas\":1,\"workerImage\":\"nginx:1.0\",\"template\":{\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}}"
+    ]
+  },
+  {
+    "name": "worker-empty",
+    "template": "agent-worker-pool.yaml",
+    "param_template": "agent-config-registries-empty.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"replicas\":1,\"workerImage\":\"evil.example/worker\",\"template\":{\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}}"
+    ]
+  },
+  {
+    "name": "worker-evil",
+    "template": "agent-worker-pool.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"replicas\":1,\"workerImage\":\"gcr.io.evil/actor\",\"template\":{\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}}"
+    ]
+  },
+  {
+    "name": "worker-host",
+    "template": "agent-worker-pool.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"replicas\":1,\"workerImage\":\"evil.example/nginx\",\"template\":{\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}}"
+    ]
+  },
+  {
+    "name": "worker-local",
+    "template": "agent-worker-pool.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"replicas\":1,\"workerImage\":\"localhost/nginx\",\"template\":{\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}}"
+    ]
+  },
+  {
+    "name": "worker-missing",
+    "template": "agent-worker-pool.yaml",
+    "param_template": "agent-config-missing-allowlists.yaml",
+    "expected": "pass",
+    "field_change_list": [
+      "spec={\"replicas\":1,\"workerImage\":\"evil.example/worker\",\"template\":{\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}}"
+    ]
+  },
+  {
+    "name": "worker-port",
+    "template": "agent-worker-pool.yaml",
+    "param_template": "agent-config-registries-enabled.yaml",
+    "expected": "fail",
+    "field_change_list": [
+      "spec={\"replicas\":1,\"workerImage\":\"registry:5000/nginx\",\"template\":{\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"256Mi\"}}}}"
+    ]
+  },
+  {
+    "name": "Sandbox-no-settings",
+    "template": "agent-sandbox-default-token.yaml",
+    "expected": "pass",
+    "param_template": "agent-config-no-settings.yaml",
+    "field_change_list": []
+  },
+  {
+    "name": "Sandbox-no-params",
+    "template": "agent-sandbox-default-token.yaml",
+    "expected": "pass",
+    "param_template": "agent-config-no-settings.yaml",
+    "field_change_list": [],
+    "binding_template": "policy-binding-without-params.yaml",
+    "omit_param_ref": true
+  },
+  {
+    "name": "SandboxTemplate-no-settings",
+    "template": "agent-sandbox-template.yaml",
+    "expected": "pass",
+    "param_template": "agent-config-no-settings.yaml",
+    "field_change_list": []
+  },
+  {
+    "name": "SandboxTemplate-no-params",
+    "template": "agent-sandbox-template.yaml",
+    "expected": "pass",
+    "param_template": "agent-config-no-settings.yaml",
+    "field_change_list": [],
+    "binding_template": "policy-binding-without-params.yaml",
+    "omit_param_ref": true
+  },
+  {
+    "name": "WorkerPool-no-settings",
+    "template": "agent-worker-pool.yaml",
+    "expected": "pass",
+    "param_template": "agent-config-no-settings.yaml",
+    "field_change_list": []
+  },
+  {
+    "name": "WorkerPool-no-params",
+    "template": "agent-worker-pool.yaml",
+    "expected": "pass",
+    "param_template": "agent-config-no-settings.yaml",
+    "field_change_list": [],
+    "binding_template": "policy-binding-without-params.yaml",
+    "omit_param_ref": true
+  }
 ]

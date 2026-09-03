@@ -1,9 +1,9 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding
 metadata:
-  name: kubescape-c-0310-agent-sandbox-runtime-isolation-warn
+  name: kubescape-c-0297-agent-sandbox-runtime-isolation-warn
 spec:
-  policyName: kubescape-c-0310-agent-sandbox-runtime-isolation
+  policyName: kubescape-c-0297-agent-sandbox-runtime-isolation
   paramRef:
     name: basic-control-configuration
     parameterNotFoundAction: Deny
