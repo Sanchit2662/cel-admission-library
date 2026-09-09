@@ -14,6 +14,20 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["services"]
+  matchConditions:
+    # matchConstraints can only narrow by kind, so without this every Service in a
+    # cluster enters this control. They all pass, because the validation below is
+    # vacuously true for anything that is not a LoadBalancer, but a Service that was
+    # never in scope should not be counted as having satisfied the control. A
+    # non-matching object is excluded here instead, which is what the equivalent Rego
+    # rule does with its own resource filter.
+    #
+    # has() guarded for the same reason the validation guards spec.type: the apiserver
+    # defaults it before admission, but a Service read straight from a YAML file during
+    # a scan may not carry it, and an unguarded read would be an evaluation error rather
+    # than a clean exclusion.
+    - name: only-loadbalancers
+      expression: "has(object.spec.type) && object.spec.type == 'LoadBalancer'"
   validations:
     # The annotation check leads so that the derived remediation path points at the
     # annotation, which is where the fix goes, rather than at spec.type.
